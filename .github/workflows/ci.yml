@@ -28,6 +28,16 @@ jobs:
           cd backend
           npm test
 
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Run tests
+        run: |
+          cd frontend
+          npm test
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -110,7 +120,7 @@ jobs:
                 # Download the code from S3
                 aws s3 cp s3://mi-ec2-con-github-actions/backend/ . --recursive
 
-                # Install dependencies and run the application with PM2 on port 8080
+                # Install dependencies and run the application with PM2 on port 8080 and frontend should be later
                 npm install
                 npm run build
                 pm2 start npm --name "my-app" -- start -- --port 8080
