@@ -34,7 +34,7 @@ jobs:
           npm install
 
       - name: Start backend
-        run: npm start &
+        run: npm build & npm start &
         working-directory: backend
 
       - name: Start frontend
