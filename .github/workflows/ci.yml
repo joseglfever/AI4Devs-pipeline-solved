@@ -36,14 +36,16 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          build: cd frontend & npm run build
-          start: cd frontend & npm start
+          build: npm run build
+          start: npm start
           browser: chrome
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 60
 
-      - name: Run tests
+      - name: Run Cypress tests
         run: |
           cd frontend
-          npm test
+          npm run cypress:run
 
   deploy:
     runs-on: ubuntu-latest
