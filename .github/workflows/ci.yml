@@ -37,6 +37,11 @@ jobs:
           cd frontend
           npm install
 
+      - name: Run tests
+        run: |
+          cd frontend
+          npm test
+
       - name: Start backend
         run: npm start &
         working-directory: backend
@@ -88,10 +93,6 @@ jobs:
         with:
           working-directory: frontend
 
-      - name: Run tests
-        run: |
-          cd frontend
-          npm test
 
   deploy:
     runs-on: ubuntu-latest
