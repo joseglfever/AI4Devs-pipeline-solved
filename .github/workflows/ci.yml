@@ -33,10 +33,12 @@ jobs:
           cd frontend
           npm install
 
-      - name: Open Cypress
-        run: |
-          cd frontend
-          npm run cypress:run
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          start: npm start
+          browser: chrome
 
       - name: Run tests
         run: |
