@@ -34,11 +34,10 @@ jobs:
           npm install
 
       - name: Cypress run
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v6 
         with:
-          build: npm run build
-          start: npm start
-        working-directory: frontend 
+          build: cd frontend && npm run build
+          start: cd frontend && npm start
 
       - name: Run tests
         run: |
