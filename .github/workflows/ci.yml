@@ -71,6 +71,10 @@ jobs:
             sleep 1
           done
 
+      - name: Run Prisma Migrations
+        run: npx prisma migrate deploy
+        working-directory: backend
+
       - name: Start frontend
         run: npm start &
         working-directory: frontend
