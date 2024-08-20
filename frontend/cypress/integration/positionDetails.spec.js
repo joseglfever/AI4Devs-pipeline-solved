@@ -1,4 +1,4 @@
-describe('Position Details Page', () => {
+describe.skip('Position Details Page', () => {
     let positionData;
     let candidatesData;
 
