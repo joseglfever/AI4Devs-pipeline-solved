@@ -36,6 +36,8 @@ describe('getCandidatesByPositionService', () => {
         fullName: 'John Doe',
         currentInterviewStep: 'Technical Interview',
         averageScore: 4,
+        applicationId: 1,
+        candidateId: 1
       },
     ]);
   });
