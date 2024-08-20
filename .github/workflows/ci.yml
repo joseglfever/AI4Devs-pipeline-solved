@@ -8,20 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: LTIdbUser
-          POSTGRES_PASSWORD: D1ymf8wyQEGthFR1E9xhCq
-          POSTGRES_DB: LTIdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -35,7 +22,6 @@ jobs:
         run: |
           cd backend
           npm install
-          npm run prisma:init
 
       - name: Run tests
         run: |
@@ -54,6 +40,9 @@ jobs:
       - name: Start backend
         run: npm start &
         working-directory: backend
+
+      - name: Start Docker Compose services
+        run: docker-compose up -d
 
       - name: Wait for database to be ready
         run: |
