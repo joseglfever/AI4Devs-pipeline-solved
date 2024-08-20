@@ -33,12 +33,18 @@ jobs:
           cd frontend
           npm install
 
+      - name: Start backend
+        run: npm start &
+        working-directory: backend
+
+      - name: Start frontend
+        run: npm start &
+        working-directory: frontend
+
       - name: Cypress run
         uses: cypress-io/github-action@v6 
         with:
           working-directory: frontend
-          build: npm run build
-          start: npm start
 
       - name: Run tests
         run: |
