@@ -3,6 +3,7 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import candidateRoutes from './routes/candidateRoutes';
+import positionRoutes from './routes/positionRoutes';
 import { uploadFile } from './application/services/fileUploadService';
 import cors from 'cors';
 
@@ -42,6 +43,9 @@ app.use('/candidates', candidateRoutes);
 // Route for file uploads
 app.post('/upload', uploadFile);
 
+// Route to get candidates by position
+app.use('/positions', positionRoutes);
+
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
@@ -55,7 +59,7 @@ app.get('/', (req, res) => {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
-  res.type('text/plain'); 
+  res.type('text/plain');
   res.status(500).send('Something broke!');
 });
 

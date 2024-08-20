@@ -2,6 +2,7 @@ import { PrismaClient, Prisma } from '@prisma/client';
 import { Education } from './Education';
 import { WorkExperience } from './WorkExperience';
 import { Resume } from './Resume';
+import { Application } from './Application';
 
 const prisma = new PrismaClient();
 
@@ -12,9 +13,10 @@ export class Candidate {
     email: string;
     phone?: string;
     address?: string;
-    education: Education[];
-    workExperience: WorkExperience[];
+    educations: Education[];
+    workExperiences: WorkExperience[];
     resumes: Resume[];
+    applications: Application[];
 
     constructor(data: any) {
         this.id = data.id;
@@ -23,9 +25,10 @@ export class Candidate {
         this.email = data.email;
         this.phone = data.phone;
         this.address = data.address;
-        this.education = data.education || [];
-        this.workExperience = data.workExperience || [];
+        this.educations = data.educations || [];
+        this.workExperiences = data.workExperiences || [];
         this.resumes = data.resumes || [];
+        this.applications = data.applications || [];
     }
 
     async save() {
@@ -39,9 +42,9 @@ export class Candidate {
         if (this.address !== undefined) candidateData.address = this.address;
 
         // Añadir educations si hay alguna para añadir
-        if (this.education.length > 0) {
+        if (this.educations.length > 0) {
             candidateData.educations = {
-                create: this.education.map(edu => ({
+                create: this.educations.map(edu => ({
                     institution: edu.institution,
                     title: edu.title,
                     startDate: edu.startDate,
@@ -51,9 +54,9 @@ export class Candidate {
         }
 
         // Añadir workExperiences si hay alguna para añadir
-        if (this.workExperience.length > 0) {
+        if (this.workExperiences.length > 0) {
             candidateData.workExperiences = {
-                create: this.workExperience.map(exp => ({
+                create: this.workExperiences.map(exp => ({
                     company: exp.company,
                     position: exp.position,
                     description: exp.description,
@@ -69,6 +72,19 @@ export class Candidate {
                 create: this.resumes.map(resume => ({
                     filePath: resume.filePath,
                     fileType: resume.fileType
+                }))
+            };
+        }
+
+        // Añadir applications si hay alguna para añadir
+        if (this.applications.length > 0) {
+            candidateData.applications = {
+                create: this.applications.map(app => ({
+                    positionId: app.positionId,
+                    candidateId: app.candidateId,
+                    applicationDate: app.applicationDate,
+                    currentInterviewStep: app.currentInterviewStep,
+                    notes: app.notes,
                 }))
             };
         }
@@ -112,10 +128,36 @@ export class Candidate {
 
     static async findOne(id: number): Promise<Candidate | null> {
         const data = await prisma.candidate.findUnique({
-            where: { id: id }
+            where: { id: id },
+            include: {
+                educations: true,
+                workExperiences: true,
+                resumes: true,
+                applications: {
+                    include: {
+                        position: {
+                            select: {
+                                id: true,
+                                title: true
+                            }
+                        },
+                        interviews: {
+                            select: {
+                                interviewDate: true,
+                                interviewStep: {
+                                    select: {
+                                        name: true
+                                    }
+                                },
+                                notes: true,
+                                score: true
+                            }
+                        }
+                    }
+                }
+            }
         });
         if (!data) return null;
         return new Candidate(data);
     }
 }
-

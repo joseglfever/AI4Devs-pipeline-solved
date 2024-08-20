@@ -9,8 +9,10 @@ Este proyecto es una aplicación full-stack con un frontend en React y un backen
     - `index.ts`: El punto de entrada para el servidor backend.
     - `application/`: Contiene la lógica de aplicación.
     - `domain/`: Contiene la lógica de negocio.
+    - `infrastructure/`: Contiene código que se comunica con la base de datos.
     - `presentation/`: Contiene código relacionado con la capa de presentación (como controladores).
     - `routes/`: Contiene las definiciones de rutas para la API.
+    - `tests/`: Contiene archivos de prueba.
   - `prisma/`: Contiene el archivo de esquema de Prisma para ORM.
   - `tsconfig.json`: Archivo de configuración de TypeScript.
 - `frontend/`: Contiene el código del lado del cliente escrito en React.
@@ -41,6 +43,13 @@ El backend es una aplicación Express escrita en TypeScript. El directorio `src`
 - `tests`: Contiene las pruebas de la aplicación.
 
 El directorio `prisma` contiene el esquema de Prisma.
+
+Tienes más información sobre buenas prácticas utilizadas en la [guía de buenas prácticas](./backend/ManifestoBuenasPracticas.md).
+
+Las especificaciones de todos los endpoints de API los tienes en [api-spec.yaml](./backend/api-spec.yaml).
+
+La descripción y diagrama del modelo de datos los tienes en [ModeloDatos.md](./backend/ModeloDatos.md).
+
 
 ## Primeros Pasos
 
@@ -108,14 +117,16 @@ Para generar la base de datos utilizando Prisma, sigue estos pasos:
 
 1. Asegúrate de que el archivo `.env` en el directorio raíz del backend contenga la variable `DATABASE_URL` con la cadena de conexión correcta a tu base de datos PostgreSQL. Si no te funciona, prueba a reemplazar la URL completa directamente en `schema.prisma`, en la variable `url`.
 
-2. Abre una terminal y navega al directorio del backend donde se encuentra el archivo `schema.prisma`.
+2. Abre una terminal y navega al directorio del backend donde se encuentra el archivo `schema.prisma` y `seed.ts`.
 
-3. Ejecuta el siguiente comando para aplicar las migraciones a tu base de datos:
+3. Ejecuta los siguientes comandos para generar la estructura de prisma, las migraciones a tu base de datos y poblarla con datos de ejemplo:
 ```
+npx prisma generate
 npx prisma migrate dev
+ts-node seed.ts
 ```
 
-Una vez has dado todos los pasos, deberías poder guardar nuevos candidatos, tanto via web, como via API, y verlos en la base de datos.
+Una vez has dado todos los pasos, deberías poder guardar nuevos candidatos, tanto via web, como via API, verlos en la base de datos y obtenerlos mediante GET por id. 
 
 ```
 POST http://localhost:3010/candidates

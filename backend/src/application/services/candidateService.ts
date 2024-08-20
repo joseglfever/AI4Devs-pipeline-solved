@@ -3,6 +3,7 @@ import { validateCandidateData } from '../validator';
 import { Education } from '../../domain/models/Education';
 import { WorkExperience } from '../../domain/models/WorkExperience';
 import { Resume } from '../../domain/models/Resume';
+import { Application } from '../../domain/models/Application';
 
 export const addCandidate = async (candidateData: any) => {
     try {
@@ -22,7 +23,7 @@ export const addCandidate = async (candidateData: any) => {
                 const educationModel = new Education(education);
                 educationModel.candidateId = candidateId;
                 await educationModel.save();
-                candidate.education.push(educationModel);
+                candidate.educations.push(educationModel);
             }
         }
 
@@ -32,7 +33,7 @@ export const addCandidate = async (candidateData: any) => {
                 const experienceModel = new WorkExperience(experience);
                 experienceModel.candidateId = candidateId;
                 await experienceModel.save();
-                candidate.workExperience.push(experienceModel);
+                candidate.workExperiences.push(experienceModel);
             }
         }
 
@@ -51,5 +52,34 @@ export const addCandidate = async (candidateData: any) => {
         } else {
             throw error;
         }
+    }
+};
+
+export const findCandidateById = async (id: number): Promise<Candidate | null> => {
+    try {
+        const candidate = await Candidate.findOne(id); // Cambio aquí: pasar directamente el id
+        return candidate;
+    } catch (error) {
+        console.error('Error al buscar el candidato:', error);
+        throw new Error('Error al recuperar el candidato');
+    }
+};
+
+export const updateCandidateStage = async (id: number, applicationIdNumber: number, currentInterviewStep: number) => {
+    try {
+        const application = await Application.findOneByPositionCandidateId(applicationIdNumber, id);
+        if (!application) {
+            throw new Error('Application not found');
+        }
+
+        // Actualizar solo la etapa de la entrevista actual de la aplicación específica
+        application.currentInterviewStep = currentInterviewStep;
+
+        // Guardar la aplicación actualizada
+        await application.save();
+
+        return application;
+    } catch (error: any) {
+        throw new Error(error);
     }
 };
