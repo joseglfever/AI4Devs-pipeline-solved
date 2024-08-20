@@ -28,6 +28,10 @@ jobs:
           cd backend
           npm test
 
+      - name: Start backend
+        run: npm run build
+        working-directory: backend
+
       - name: Install dependencies
         run: |
           cd frontend
