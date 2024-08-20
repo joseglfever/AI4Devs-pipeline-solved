@@ -12,9 +12,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: mydatabase
+          POSTGRES_USER: LTIdbUser
+          POSTGRES_PASSWORD: D1ymf8wyQEGthFR1E9xhCq
+          POSTGRES_DB: LTIdb
         ports:
           - 5432:5432
         options: >-
