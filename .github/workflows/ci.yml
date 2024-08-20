@@ -33,6 +33,11 @@ jobs:
           cd frontend
           npm install
 
+      - name: Open Cypress
+        run: |
+          cd frontend
+          npm cypress:open
+
       - name: Run tests
         run: |
           cd frontend
