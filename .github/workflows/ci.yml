@@ -38,14 +38,12 @@ jobs:
         with:
           build: npm run build
           start: npm start
-          browser: chrome
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 60
+        working-directory: frontend 
 
-      - name: Run Cypress tests
+      - name: Run tests
         run: |
           cd frontend
-          npm run cypress:run
+          npm test
 
   deploy:
     runs-on: ubuntu-latest
