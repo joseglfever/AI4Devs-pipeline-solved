@@ -21,10 +21,9 @@ Agrega los siguientes pasos dentro del job build:
 - Ejecución de tests de Cypress.
 
 Define un job llamado deploy que dependa del job build y que se ejecute solo si el evento es un pull_request.
-
 Dentro del job deploy, incluye los siguientes pasos:
 
-Configuración de credenciales de AWS utilizando las variables de entorno AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, y AWS_REGION.
+- Configuración de credenciales de AWS utilizando las variables de entorno AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, y AWS_REGION.
 - Subir el backend a S3 utilizando aws s3 cp para copiar el contenido de la carpeta backend al bucket S3.
 
 - Desplegar el backend en una instancia EC2:
