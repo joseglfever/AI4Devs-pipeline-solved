@@ -32,10 +32,6 @@ Dentro del job deploy, incluye los siguientes pasos:
 
 ** Prompt 2**
 Puedes hacer los siguientes cambios basado en buenas practicas?
-  - Configura Nginx como proxy inverso para el backend en el puerto 8080.
+  - Configura Nginx como proxy inverso para el backend que esta corriendo en el puerto 8080 y  disponibilizalo en el puerto 80.
   - Ejecuta en segundo plano el backend ya que esta quedandose corriendo indefinidamente.
   - Los tests estan fallando, debes esperar a que la base de datos, frontend y backend estén listos para que Cypress pueda ejecutar los test.
-
-** Prompt 3**
-Parece que la configuracion de Nginx no esta siendo tomada en cuenta, puedes modificar el codigo para que se ejecute en el puerto 80?
-
