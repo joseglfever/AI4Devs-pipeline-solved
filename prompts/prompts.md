@@ -1,4 +1,4 @@
-** Prompt 1**
+**Prompt 1**
 
 Eres un Senior DevSecOps Engineer y se te ha solicitado realizar un pipeline de CI/CD para la compañía. La estructura del pipeline debe seguir las siguientes especificaciones:
 
