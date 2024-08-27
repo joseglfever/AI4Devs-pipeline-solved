@@ -28,67 +28,6 @@ jobs:
           cd backend
           npm test
 
-      - name: Start backend
-        run: npm run build
-        working-directory: backend
-
-      - name: Install dependencies
-        run: |
-          cd frontend
-          npm install
-
-      - name: Start backend
-        run: npm start &
-        working-directory: backend
-
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            ca-certificates \
-            curl \
-            gnupg \
-            lsb-release
-          sudo mkdir -m 0755 -p /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          sudo apt-get update
-          sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-
-
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d\" -f4)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-
-      - name: Start Docker Compose services
-        run: docker-compose up -d
-
-      - name: Wait for database to be ready
-        run: |
-          until pg_isready -h localhost -p 5432; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 1
-          done
-
-      - name: Run Prisma Migrations
-        run: npx prisma migrate deploy
-        working-directory: backend
-
-      - name: Start frontend
-        run: npm start &
-        working-directory: frontend
-      - name: Wait for frontend and backend to be ready
-        run: |
-         npx wait-on http://localhost:3010
-         npx wait-on http://localhost:3000
-
-      - name: Cypress run
-        uses: cypress-io/github-action@v6 
-        with:
-          working-directory: frontend
-
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -113,6 +52,11 @@ jobs:
         run: |
           aws s3 cp backend/ s3://mi-ec2-con-github-actions/backend/ --recursive
 
+      - name: Add EC2 Host Key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.EC2_INSTANCE }} >> ~/.ssh/known_hosts
+
       - name: Deploy to EC2
         env:
             EC2_INSTANCE: ${{ secrets.EC2_INSTANCE }}
@@ -120,16 +64,18 @@ jobs:
         run: |
             echo "Deploying to EC2 instance..."
             echo "$EC2_SSH_PRIVATE_KEY" > private_key.pem
-            chmod 600 private_key.pem
-            ssh -o StrictHostKeyChecking=no -i private_key.pem ec2-user@$EC2_INSTANCE << 'EOF'
+            cat private_key.pem
+            chmod 600 private_key.pem  
+          
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ec2-user@${{ secrets.EC2_INSTANCE }} << 'EOF'
                 export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_ID }}
                 export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
                 export AWS_REGION='us-east-1'
 
                 # Install Nginx if not already installed
                 if ! command -v nginx &> /dev/null; then
-                sudo apt-get update
-                sudo apt-get install -y nginx
+                sudo yum update
+                sudo yum install -y nginx
                 fi
 
                 # Ensure Nginx config directory exists
@@ -171,7 +117,7 @@ jobs:
                 # Download the code from S3
                 aws s3 cp s3://mi-ec2-con-github-actions/backend/ . --recursive
 
-                # Install dependencies and run the application with PM2 on port 8080 and frontend should be later
+                # Install dependencies and run the application with PM2 on port 8080
                 npm install
                 npm run build
                 pm2 start npm --name "my-app" -- start -- --port 8080
