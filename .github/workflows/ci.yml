@@ -78,6 +78,13 @@ jobs:
                 sudo yum install -y nginx
                 fi
 
+                if ! command -v npm &> /dev/null; then
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                source ~/.bashrc
+                nvm install --lts
+                node -e "console.log('Running Node.js ' + process.version)"
+                fi
+
                 # Ensure Nginx config directory exists
                 sudo mkdir -p /etc/nginx/sites-available
                 sudo mkdir -p /etc/nginx/sites-enabled

@@ -4,6 +4,8 @@
 **/.env.example
 **/node_modules
 **/prompts_master.md
+*.backup
+.terraform/
 
 # other dependencies
 **/.pnp
