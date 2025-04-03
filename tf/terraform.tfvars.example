@@ -1,0 +1,16 @@
+# terraform.tfvars.example
+# Rename this file to terraform.tfvars and fill in your specific values.
+# Do NOT commit terraform.tfvars to git if it contains sensitive information.
+
+# Required variables:
+# Find Ubuntu 22.04 AMI for your region: https://cloud-images.ubuntu.com/locator/ec2/
+# ami_id = "ami-xxxxxxxxxxxxxxxxx" # Example: ami-08c40ec9ead489470 for us-east-1
+
+# Get your public IP (e.g., from https://checkip.amazonaws.com/) and add /32 suffix
+# allowed_ssh_cidr = "YOUR_PUBLIC_IP/32" # Example: "80.34.120.55/32"
+
+# Optional variables (defaults are provided in variables.tf):
+# aws_region      = "us-east-1"
+# instance_type   = "t3.small"
+# project_name    = "lti-recruiting"
+# create_cv_bucket = true 
