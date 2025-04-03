@@ -111,7 +111,7 @@ jobs:
 
                 # Install PM2 if not already installed
                 if ! command -v pm2 &> /dev/null; then
-                sudo npm install -g pm2
+                npm install -g pm2
                 fi
 
                 # Stop the application if it's running
